@@ -1,26 +1,61 @@
-import express from "express";
-import morgan from "morgan";
-import cors from "cors";
+const fs = require("fs/promises");
+const path = require("path");
 
-import contactsRouter from "./routes/contactsRouter.js";
+const contactsPath = path.join(__dirname, "..", "db", "contacts.json");
 
-const app = express();
+async function listContacts() {
+  return JSON.parse(await fs.readFile(contactsPath, "utf-8"));
+}
 
-app.use(morgan("tiny"));
-app.use(cors());
-app.use(express.json());
+async function getContactById(contactId) {
+  const contacts = await listContacts();
+  return contacts.find((contact) => contact.id === contactId) || null;
+}
 
-app.use("/api/contacts", contactsRouter);
+async function removeContact(contactId) {
+  const contacts = await listContacts();
+  const removedContact = contacts.find((contact) => contact.id === contactId);
+  if (removedContact) {
+    const updatedContacts = contacts.filter(
+      (contact) => contact.id !== contactId
+    );
+    await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
+    return removedContact;
+  } else {
+    return null;
+  }
+}
 
-app.use((_, res) => {
-  res.status(404).json({ message: "Route not found" });
-});
+async function addContact(name, email, phone) {
+  const contacts = await listContacts();
+  const newContact = {
+    id: crypto.randomUUID(),
+    name,
+    email,
+    phone,
+  };
+  contacts.push(newContact);
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+  return newContact;
+}
 
-app.use((err, req, res, next) => {
-  const { status = 500, message = "Server error" } = err;
-  res.status(status).json({ message });
-});
+async function updateContact(contactId, body) {
+  const contacts = await listContacts();
+  const index = contacts.findIndex((contact) => contact.id === contactId);
+  if (index !== -1) {
+    const updatedContact = { ...contacts[index], ...body };
+    contacts[index] = updatedContact;
+    await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+    return updatedContact;
+  } else {
+    return null;
+  }
+}
 
-app.listen(3000, () => {
-  console.log("Server is running. Use our API on port: 3000");
-});
+module.exports = {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+  updateContact,
+};
