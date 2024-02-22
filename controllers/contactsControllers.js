@@ -1,64 +1,64 @@
-const contactsService = require("../services/contactsServices.js");
-const createError = require("../helpers/HttpError.js");
-const controllerWrapp = require('../helpers/ContollerWrapp')
+import contactsService from "../services/contactsServices.js";
+import HttpError from "../helpers/HttpError.js";
 
-const getAllContactsFn = async (req, res) => {
-  const contacts = await contactsService.listContacts();
-  res.json(contacts);
+export const getAllContacts = async (req, res, next) => {
+    try {
+        const result = await contactsService.listContacts();
+        res.json(result);
+    }
+    catch (error) {
+        next(error)
+    }
 };
 
-const getOneContactFn = async (req, res) => {
-  const { id } = req.params;
-  const contact = await contactsService.getContactById(id);
-
-  if (!contact) {
-    throw createError(404, "Contact not found");
-  }
-  res.json(contact);
+export const getOneContact = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const result = await contactsService.getContactById(id);
+        if (!result) {
+            throw HttpError(404);
+        }
+        res.json(result);
+    } catch (error) {
+        next(error)
+    }
 };
 
-const deleteContactFn = async (req, res) => {
-  const { id } = req.params;
-  const deletedContact = await contactsService.removeContact(id);
-
-  if (!deletedContact) {
-    throw createError(404, "Contact not found");
-  }
-
-  res.json(deletedContact);
+export const deleteContact = async (req, res, next) => { 
+    try {
+        const { id } = req.params;
+        const result = await contactsService.removeContact(id);
+        if (!result) {
+            throw HttpError(404);
+        }
+        res.json({
+            message:'Delete success', result
+        })
+    } catch (error) {
+        next(error)
+    }
 };
 
-const createContactFn = async (req, res) => {
-  const { name, email, phone } = req.body;
-  const newContact = await contactsService.addContact({ name, email, phone });
+export const createContact = async (req, res, next) => {
+    try {
 
-  res.status(201).json(newContact);
+        const result = await contactsService.addContact(req.body);
+        res.status(201).json(result)
+
+    } catch (error) {
+        next(error)
+    }
 };
 
-const updateContactFn = async (req, res) => {
-  const { id } = req.params;
-
-  const existingContact = await contactsService.getContactById(id);
-
-  if (!existingContact) {
-    throw createError(404, "Contact not found");
-  }
-
-  const updatedContact = await contactsService.updateContact(id, req.body);
-
-  res.json(updatedContact);
-};
-
-const updateContact = controllerWrapp(updateContactFn);
-const createContact = controllerWrapp(createContactFn);
-const deleteContact = controllerWrapp(deleteContactFn);
-const getOneContact = controllerWrapp(getOneContactFn);
-const getAllContacts = controllerWrapp(getAllContactsFn);
-
-module.exports = {
-  updateContact,
-  createContact,
-  deleteContact,
-  getOneContact,
-  getAllContacts,
+export const updateContact = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const result = await contactsService.updateContact(id, req.body);
+        if (!result) {
+            throw HttpError(400, error.message)
+        }
+        res.json(result);
+    } catch (error) {
+        next(error)
+    }
 };
