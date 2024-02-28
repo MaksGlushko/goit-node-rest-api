@@ -1,80 +1,46 @@
-import { Contact } from "../schemas/mongoSchema.js";
 
-const listContacts = async () => {
-  try {
-    const contacts = await Contact.find();
-    return contacts;
-  } catch (error) {
-    console.log(`Error: ${error}`);
-  }
-};
 
-async function getContactById(id) {
+import { contacts } from "../models/contactModel.js";
+
+
+export async function listContacts() {
   try {
-    const contact = await Contact.findById(id);
-    return contact || null;
-  } catch (error) {
-    return null;
+    const listOfCont = await contacts.find({});
+    return listOfCont;
+  } catch (err) {
+    console.log(err);
   }
 }
 
-async function removeContact(id) {
+export async function getContactById(id) {
   try {
-    const removedContact = await Contact.findByIdAndDelete(id);
-    return removedContact || null;
-  } catch (error) {
-    return null;
+    const cont = await contacts.findById(id);
+    return cont;
+  } catch (err) {
+    console.log(err);
   }
 }
 
-async function addContact(name, email, phone) {
-  try {
-    const newContact = await Contact.create({ name, email, phone });
-    return newContact;
-  } catch (error) {
-    return null;
-  }
+export async function removeContact(contactId) {
+  const result = await contacts.findByIdAndDelete(contactId).catch((err) => {
+    console.log(err);
+  });
+  return result;
 }
 
-async function updateContactService(id, name, email, phone) {
-  try {
-    const existingContact = await Contact.findById(id);
-
-    if (!existingContact) {
-      return null;
-    }
-
-    existingContact.name = name || existingContact.name;
-    existingContact.email = email || existingContact.email;
-    existingContact.phone = phone || existingContact.phone;
-
-    await existingContact.save();
-
-    return existingContact;
-  } catch (error) {
-    return null;
-  }
+export async function addContact(body) {
+  const result = await contacts.create(body);
+  return result;
 }
-
-async function updateStatusContact(id, favorite) {
-  try {
-    const updatedContact = await Contact.findByIdAndUpdate(
-      id,
-      { favorite },
-      { new: true }
-    );
-    return updatedContact;
-  } catch (error) {
-    console.error(`Error updating contact status: ${error}`);
-    return null;
-  }
+export async function putContact(id, body) {
+  await contacts.findByIdAndUpdate(id, body);
+  const result = await getContactById(id);
+  return result;
 }
-
-export {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContactService,
-  updateStatusContact,
-};
+export async function updateStatusContact(contactId, body) {
+  await contacts.findByIdAndUpdate(contactId, body).catch((err) => {
+    return err;
+  });
+  const result = await getContactById(contactId);
+  return result;
+}

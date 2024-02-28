@@ -1,17 +1,24 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import dotenv from "dotenv";
+import mongoose from "mongoose";
+mongoose.Promise = global.Promise;
 
 import contactsRouter from "./routes/contactsRouter.js";
 
-dotenv.config();
-
 const app = express();
 
-const tiny = app.get("env") === "development" ? "dev" : "short";
+mongoose
+  .connect('mongodb+srv://Maks:HuWjIMBKGVrcaF5Y@cluster0.peqplzf.mongodb.net/db-contacts')
+  .then(() => {
+    console.log("Database connection successful");
+  })
+  .catch((err) => {
+    console.log(err);
+    process.exit(1);
+  })
 
-app.use(morgan(tiny));
+app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
@@ -29,4 +36,3 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
   console.log("Server is running. Use our API on port: 3000");
 });
-export default app;

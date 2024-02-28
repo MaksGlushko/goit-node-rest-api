@@ -1,6 +1,5 @@
 import { model, Schema } from "mongoose";
-
-const contactsSchema = new Schema(
+const contactSchema = new Schema(
   {
     name: {
       type: String,
@@ -17,9 +16,9 @@ const contactsSchema = new Schema(
       default: false,
     },
   },
-  { versionKey: false }
+  {
+    versionKey: false,
+  }
 );
 
-const Contact = model("contacts", contactsSchema);
-
-export { Contact };
+export const contacts = model("contacts", contactSchema);
