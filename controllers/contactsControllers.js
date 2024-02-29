@@ -23,7 +23,7 @@ export const getOneContact = async (req, res) => {
   const cont = await getContactById(id);
   if (cont === undefined) {
     res.status(404).json({
-      msg: "Not found!!",
+      message: "Not found!!",
     });
   } else {
     res.status(200).json(cont);
@@ -36,7 +36,7 @@ export const deleteContact = async (req, res) => {
   console.log(removedContact);
   if (removedContact === null || removedContact === undefined) {
     res.status(404).json({
-      msg: "Not found!!",
+      message: "Not found!!",
     });
   } else {
     res.status(200).json(removedContact);
@@ -48,7 +48,7 @@ export const createContact = async (req, res) => {
   const validation = createContactSchema.validate(contactBody);
   if (validation.error) {
     res.status(400).json({
-      msg: validation.error.message,
+      message: validation.error.message,
     });
   } else {
     const contact = await addContact(contactBody);
@@ -61,7 +61,7 @@ export const updateContact = async (req, res) => {
   const validation = updateContactSchema.validate(contactBody);
   if (validation.error) {
     res.status(400).json({
-      msg: validation.error.message,
+      message: validation.error.message,
     });
   } else if (
     contactBody.name === undefined &&
@@ -69,14 +69,14 @@ export const updateContact = async (req, res) => {
     contactBody.phone === undefined
   ) {
     res.status(400).json({
-      msg: "Body must have at least one field",
+      message: "Body must have at least one field",
     });
   } else {
     const contactId = req.params.id;
     const newContact = await putContact(contactId, contactBody);
     if (newContact === null) {
       res.status(404).json({
-        msg: "Not found!",
+        message: "Not found!",
       });
     } else {
       res.status(201).json(newContact);
@@ -89,14 +89,14 @@ export const patchContacts = async (req, res) => {
   const validation = updateStatusSchema.validate(contactBody);
   if (validation.error) {
     res.status(400).json({
-      msg: validation.error.message,
+      message: validation.error.message,
     });
   } else {
     const contactId = req.params.id;
     const cont = await updateStatusContact(contactId, contactBody);
     if (cont === undefined) {
       res.status(404).json({
-        msg: "Not found!!",
+        message: "Not found!!",
       });
     } else {
       res.status(200).json(cont);

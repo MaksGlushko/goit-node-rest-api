@@ -5,7 +5,7 @@ export const isValidId = (req, res, next) => {
   if (!isValidObjectId(id)) {
     next(
       res.status(404).json({
-        msg: "Not found!",
+        message: "Not found!",
       })
     );
   }
