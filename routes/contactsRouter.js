@@ -23,8 +23,4 @@ contactsRouter.put("/:id", isValidId, updateContact);
 
 contactsRouter.patch("/:id/favorite", isValidId, patchContacts);
 
-// contactsRouter.patch(
-//   "/:id/favorite");
-
-
 export default contactsRouter;
