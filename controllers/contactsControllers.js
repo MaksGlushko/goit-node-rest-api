@@ -101,5 +101,5 @@ export const patchContacts = async (req, res) => {
     } else {
       res.status(200).json(cont);
     }
-  }
+  }  
 };
