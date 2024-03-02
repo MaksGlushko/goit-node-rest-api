@@ -94,7 +94,7 @@ export const patchContacts = async (req, res) => {
   } else {
     const contactId = req.params.id;
     const cont = await updateStatusContact(contactId, contactBody);
-    if (cont === undefined) {
+    if (!cont) {
       res.status(404).json({
         message: "Not found!!",
       });
