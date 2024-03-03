@@ -21,7 +21,7 @@ export const getAllContacts = async (req, res) => {
 export const getOneContact = async (req, res) => {
   const { id } = req.params;
   const cont = await getContactById(id);
-  if (cont === undefined) {
+  if (!cont) {                     
     res.status(404).json({
       message: "Not found!!",
     });
@@ -34,7 +34,7 @@ export const deleteContact = async (req, res) => {
   const { id } = req.params;
   const removedContact = await removeContact(id);
   console.log(removedContact);
-  if (removedContact === null || removedContact === undefined) {
+  if (removedContact === null) {
     res.status(404).json({
       message: "Not found!!",
     });
@@ -74,7 +74,7 @@ export const updateContact = async (req, res) => {
   } else {
     const contactId = req.params.id;
     const newContact = await putContact(contactId, contactBody);
-    if (newContact === null) {
+    if (!newContact) {
       res.status(404).json({
         message: "Not found!",
       });
@@ -101,5 +101,6 @@ export const patchContacts = async (req, res) => {
     } else {
       res.status(200).json(cont);
     }
-  }  
-};
+  }
+}
+
