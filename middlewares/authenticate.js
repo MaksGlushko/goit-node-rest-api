@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { User } from '../models/users.js';
-import HttpError from "../helpers/HttpError.js";
+import { HttpError } from "../helpers/HttpError.js";
 import dotenv from "dotenv";
 dotenv.config();
 
