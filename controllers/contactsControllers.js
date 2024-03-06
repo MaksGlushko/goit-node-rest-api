@@ -1,5 +1,5 @@
 // import contactsService from "../services/contactsServices.js";
-import {HttpError}  from "../helpers/HttpError.js";
+    import {HttpError}  from "../helpers/HttpError.js";
 import { Contact } from '../models/contact.js';
 
 export const getAllContacts = async (req, res, next) => {
@@ -19,8 +19,9 @@ export const getOneContact = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { _id: owner } = req.user;
-        const result = await Contact.findOne({_id:id}).where("owner").equals(owner);
-        // const result = await Contact.findById(id);
+        const result = await Contact.findOne({_id:id, owner })
+        .where("owner")
+        .equals(owner);
         if (!result) {
             throw HttpError(404);
         }
