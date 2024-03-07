@@ -1,14 +1,17 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-const createContactSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().email({ minDomainSegments: 2 }).required(),
-  phone: Joi.string().required(),
+export const createContactSchema = Joi.object({
+    name: Joi.string().required(),
+    email: Joi.string().required(),
+    phone: Joi.string().required(),
+    favorite: Joi.boolean(),
+})
+export const updateContactSchema = Joi.object({
+    name: Joi.string(),
+    email: Joi.string(),
+    phone: Joi.string(),
+    favorite: Joi.boolean()
 });
-
-const updateContactSchema = Joi.object({
-  name: Joi.string(),
-  email: Joi.string().email({ minDomainSegments: 2 }),
-  phone: Joi.string(),
-});
-module.exports = { createContactSchema, updateContactSchema };
+export const updateFavoriteSchema = Joi.object({
+    favorite: Joi.boolean().required()
+})
