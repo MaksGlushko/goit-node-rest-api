@@ -6,7 +6,6 @@ export const createContactSchema = Joi.object({
     phone: Joi.string().required(),
     favorite: Joi.boolean(),
 })
-
 export const updateContactSchema = Joi.object({
     name: Joi.string(),
     email: Joi.string(),
