@@ -1,32 +1,31 @@
 import nodemailer from "nodemailer";
 import "dotenv/config";
 
-const { META_PASSWORD } = process.env;
+const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD } = process.env;
 
-const nodemailerConfig = {
-    host: "smtp.meta.ua",
-    port: 465,
-    secure: true,
-    auth: {
-        user: "valuadum1@meta.ua",
-        pass: META_PASSWORD,
-    }
+const config = {
+  host: SMTP_HOST,
+  port: SMTP_PORT,
+  secure: false,
+  auth: {
+    user: SMTP_USER,
+    pass: SMTP_PASSWORD,
+  },
 };
-const transport = nodemailer.createTransport(nodemailerConfig);
 
-// const email = {
-//     to: "kinedav149@huvacliq.com",
-//     from: "valuadum1@meta.ua",
-//     subject: "Test email",
-//     html: "<p><strong>Test email</strong> from localhost:3000</p>"
-// };
-// transport.sendMail(email)
-//     .then(() => console.log("Email send success"))
-//     .catch((error) => console.log(error.message));
+const transporter = nodemailer.createTransport(config);
 
-const sendEmail = data => {
-    const email = { ...data, from: "valuadum1@meta.ua" };
-    return transport.sendMail(email);
-}
+const sendEmail = async ({ to, subject, html }) => {
+  try {
+    await transporter.sendMail({
+      from: SMTP_USER,
+      to,
+      subject,
+      html,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
 
 export {sendEmail};
