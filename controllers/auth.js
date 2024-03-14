@@ -55,6 +55,14 @@ export const verifyEmail = async (req, res, next) => {
         if (!user) {
             throw HttpError(404, "User not found");
         }
+    } catch (error) {
+        next(error)
+    }
+};
+export const resendVerifyEmail = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
         const verifyEmail = {
             to: email, subject: "Verify your email",
             html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}">Click verify email</a>`
@@ -63,14 +71,6 @@ export const verifyEmail = async (req, res, next) => {
         res.status(200).json({
             message: "Verification email sent"
         });
-    } catch (error) {
-        next(error)
-    }
-};
-export const resendVerifyEmail = async (req, res, next) => {
-    try {
-        const { email } = req.body;
-        
         const user = await User.findOne({ email });
         if (!email) {
             throw HttpError(400, "missing required field email");
@@ -82,6 +82,9 @@ export const resendVerifyEmail = async (req, res, next) => {
         res.status(200).json({
             message: "Verification successful"
         });
+        if (!user) {
+            throw HttpError(404, "User not found");
+        }
     } catch (error) {
         next(error)
     }
