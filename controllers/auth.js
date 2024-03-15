@@ -55,6 +55,10 @@ export const verifyEmail = async (req, res, next) => {
         if (!user) {
             throw HttpError(404, "User not found");
         }
+        await User.findByIdAndUpdate(user._id, { verify: true, verificationToken: null });
+        res.status(200).json({
+            message: "Verification successful"
+        });
     } catch (error) {
         next(error)
     }
@@ -63,28 +67,28 @@ export const resendVerifyEmail = async (req, res, next) => {
     try {
         const { email } = req.body;
 
-        const verifyEmail = {
-            to: email, subject: "Verify your email",
-            html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}">Click verify email</a>`
-        }
-        await sendEmail(verifyEmail);
-        res.status(200).json({
-            message: "Verification email sent"
-        });
         const user = await User.findOne({ email });
         if (!email) {
             throw HttpError(400, "missing required field email");
         }
-        if (user.verify) {
-            throw HttpError(400, "Verification has already been passed")
-        }
-        await User.findByIdAndUpdate(user._id, { verify: true, verificationToken: null });
-        res.status(200).json({
-            message: "Verification successful"
-        });
         if (!user) {
             throw HttpError(404, "User not found");
         }
+        if (user.verify) {
+            throw HttpError(400, "Verification has already been passed")
+        }
+
+        const verifyEmail = {
+            to: email, subject: "Verify your email",
+            html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}">Click verify email</a>`
+        }      
+      
+
+        await sendEmail(verifyEmail);
+        res.status(200).json({
+            message: "Verification email sent"
+        });
+
     } catch (error) {
         next(error)
     }
