@@ -80,7 +80,7 @@ export const resendVerifyEmail = async (req, res, next) => {
 
         const verifyEmail = {
             to: email, subject: "Verify your email",
-            html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${verificationToken}">Click verify email</a>`
+            html: `<a target="_blank" href="${BASE_URL}/api/users/verify/${user.verificationToken}">Click verify email</a>`
         }      
       
 
